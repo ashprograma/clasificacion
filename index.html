@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Clasificación de Residuos</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .game-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px;
+        }
+        .bin {
+            width: 150px;
+            height: 200px;
+            margin: 20px;
+            border: 2px solid #000;
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+            background-color: #fff;
+        }
+        .bin img {
+            width: 100px;
+            height: 100px;
+        }
+        .item-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .item {
+            width: 100px;
+            height: 100px;
+            margin: 10px;
+            cursor: grab;
+        }
+        #verify-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        @media (max-width: 600px) {
+            .game-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .bin {
+                width: 80%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Clasifica los Residuos</h1>
+    <section class="game-container">
+        <div class="bin" id="organico">
+            <h3>Residuos Orgánicos</h3>
+            <img src="imagenes/orgánicos.png" alt="Contenedor de residuos orgánicos">
+        </div>
+        <div class="bin" id="aprovechable">
+            <h3>Residuos Aprovechable</h3>
+            <img src="imagenes/aprovechables.png" alt="Contenedor de residuos aprovechables">
+        </div>
+        <div class="bin" id="no_aprovechable">
+            <h3>Residuos No Aprovechable</h3>
+            <img src="imagenes/no_aprovechables.png" alt="Contenedor de residuos no aprovechables">
+        </div>
+    </section>
+    <section class="item-container">
+        <img class="item" src="imagenes/botella.png" alt="Botella de plástico" id="botella">
+        <img class="item" src="imagenes/envoltura.jpg" alt="Envoltura de plástico" id="envoltura">
+        <img class="item" src="imagenes/banano.jpg" alt="Cáscaras de banano" id="banano">
+    </section>
+    <button id="verify-btn">Verificar</button>
+    <p id="result"></p>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const items = document.querySelectorAll(".item");
+            const bins = document.querySelectorAll(".bin");
+            const verifyBtn = document.getElementById("verify-btn");
+            const resultText = document.getElementById("result");
+
+            items.forEach(item => {
+                item.draggable = true;
+                item.addEventListener("dragstart", (event) => {
+                    event.dataTransfer.setData("text", event.target.id);
+                });
+            });
+
+            bins.forEach(bin => {
+                bin.addEventListener("dragover", (event) => {
+                    event.preventDefault();
+                });
+                bin.addEventListener("drop", (event) => {
+                    event.preventDefault();
+                    const itemId = event.dataTransfer.getData("text");
+                    const item = document.getElementById(itemId);
+                    bin.appendChild(item);
+                });
+            });
+
+            verifyBtn.addEventListener("click", function () {
+                const banano= document.getElementById("banano").parentElement.id === "organico";
+                const envoltura = document.getElementById("envoltura").parentElement.id === "no_aprovechable";
+                const botella = document.getElementById("botella").parentElement.id === "aprovechable";
+                
+                if (botella && banano && envoltura) {
+                    resultText.textContent = "¡Correcto! Has clasificado bien los residuos.";
+                    resultText.style.color = "green";
+                } else {
+                    resultText.textContent = "Inténtalo de nuevo. Algunos residuos están mal clasificados.";
+                    resultText.style.color = "red";
+                }
+            });
+        });
+    </script>
+</body>
+</html
